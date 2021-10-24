@@ -1,0 +1,16 @@
+{
+    "name": "utopigs/epigtor-plugin",
+    "type": "october-plugin",
+    "description": "In-context content editor plugin",
+    "homepage": "http://utopigstudio.com",
+    "keywords": ["october", "octobercms", "editme", "translate"],
+    "authors": [
+        {
+            "name": "Utopig Studio",
+            "email": "info@utopigstudio.com"
+        }
+    ],
+    "require": {
+        "composer/installers": "~1.0"
+    }
+}
