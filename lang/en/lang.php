@@ -13,4 +13,10 @@ return [
             'description' => 'Translation string to show or edit',
         ],
     ],
+    'settings' => [
+        'name' => 'Editor advanced settings',
+        'description' => 'Customize global editor advanced options',
+        'froala_custom_defaults' => 'Custom defaults',
+        'froala_custom_defaults_comment' => 'Custom default options for Froala editor',
+    ],
 ];

@@ -1,6 +1,7 @@
 <?php namespace Utopigs\Epigtor;
 
 use System\Classes\PluginBase;
+use Utopigs\Epigtor\Models\Settings;
 
 class Plugin extends PluginBase
 {
@@ -26,6 +27,21 @@ class Plugin extends PluginBase
         ];
     }
 
+    public function registerSettings()
+    {
+        return [
+            'settings' => [
+                'label'       => 'utopigs.epigtor::lang.settings.name',
+                'description' => 'utopigs.epigtor::lang.settings.description',
+                'category'    => \System\Classes\SettingsManager::CATEGORY_SYSTEM,
+                'icon'        => 'icon-code',
+                'class'       => 'Utopigs\Epigtor\Models\Settings',
+                'permissions' => ['backend.manage_editor'],
+                'order'       => 600,
+            ]
+        ];
+    }
+
     public function register()
     {
         //
@@ -33,7 +49,12 @@ class Plugin extends PluginBase
 
     public function boot()
     {
-        //
+        $froala_custom_defaults = Settings::get('froala_custom_defaults_file');
+        if ($froala_custom_defaults) {
+            \Backend\Classes\Controller::extend(function ($controller) use ($froala_custom_defaults) {
+                $controller->addJs('/storage/app/media/utopigs_epigtor/'.$froala_custom_defaults);
+            });
+        }
     }
 
 }

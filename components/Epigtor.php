@@ -8,6 +8,7 @@ use RainLab\Translate\Models\Message;
 use System\Helpers\Cache as CacheHelper;
 use Media\Widgets\MediaManager;
 use Backend\Models\EditorSetting;
+use Utopigs\Epigtor\Models\Settings;
 
 class Epigtor extends ComponentBase
 {
@@ -55,6 +56,11 @@ class Epigtor extends ComponentBase
             $this->addJs('/modules/backend/formwidgets/richeditor/assets/js/build-min.js', 'core');
             $this->addJs('/modules/backend/formwidgets/richeditor/assets/js/build-plugins-min.js', 'core');
             $this->addJs('/modules/backend/formwidgets/codeeditor/assets/js/build-min.js', 'core');
+
+            $froala_custom_defaults = Settings::get('froala_custom_defaults_file');
+            if ($froala_custom_defaults) {
+                $this->addJs('/storage/app/media/utopigs_epigtor/'.$froala_custom_defaults);
+            }
 
             $this->paragraphFormats = EditorSetting::getConfiguredFormats('html_paragraph_formats') ? json_encode(EditorSetting::getConfiguredFormats('html_paragraph_formats')) : null;
 
