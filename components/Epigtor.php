@@ -9,6 +9,7 @@ use System\Helpers\Cache as CacheHelper;
 use Media\Widgets\MediaManager;
 use Backend\Models\EditorSetting;
 use Utopigs\Epigtor\Models\Settings;
+use Url;
 
 class Epigtor extends ComponentBase
 {
@@ -66,6 +67,8 @@ class Epigtor extends ComponentBase
 
             $this->addCss('assets/css/epigtor.css?v=1.0.8');
             $this->addJs('assets/js/epigtor.js?v=1.0.8');
+
+            $this->ace_vendor_path = Url::asset('/modules/backend/formwidgets/codeeditor/assets/vendor/ace');
 
             $this->csrf_token = csrf_token();
         }
