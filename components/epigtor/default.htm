@@ -1,3 +1,23 @@
+{% if __SELF__.type == 'richeditor' %}
+<div
+    data-control="epigtor"
+    data-type="richeditor"
+    data-handler="{{ __SELF__ }}::onSave"
+    data-message="{{ __SELF__.message }}"
+    data-model="{{ __SELF__.model_class }}"
+    data-id="{{ __SELF__.model_id }}"
+    data-upload-handler="{{ __SELF__ }}::onUpload"
+    data-csrf-token="{{ __SELF__.csrf_token }}">
+    <div class="rendered">{{ __SELF__.content|raw }}</div>
+    <div
+        class="epigtor-richeditor"
+        data-legacy-mode="1">
+        <div class="editor-write layout-cell">
+            <textarea data-richeditor-textarea style="display:none">{{ __SELF__.content }}</textarea>
+        </div>
+    </div>
+</div>
+{% else %}
 <span
     data-control="epigtor"
     data-type="plain"
@@ -7,3 +27,4 @@
     data-id="{{ __SELF__.model_id }}">
     {{ __SELF__.content|raw }}
 </span>
+{% endif %}

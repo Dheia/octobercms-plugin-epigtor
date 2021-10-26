@@ -1,10 +1,12 @@
 <?php namespace Utopigs\Epigtor\Components;
 
+use Backend\Classes\Controller;
 use BackendAuth;
 use Cms\Classes\ComponentBase;
 use RainLab\Translate\Classes\Translator;
 use RainLab\Translate\Models\Message;
 use System\Helpers\Cache as CacheHelper;
+use Media\Widgets\MediaManager;
 
 class Epigtor extends ComponentBase
 {
@@ -45,6 +47,13 @@ class Epigtor extends ComponentBase
         if ($this->isEditor) {
             $this->addCss('assets/vendor/redactor/redactor.css');
             $this->addJs('assets/vendor/redactor/redactor.js');
+
+            $this->addJs('/modules/system/assets/ui/js/foundation.baseclass.js');
+            $this->addJs('/modules/system/assets/ui/js/foundation.controlutils.js');
+            $this->addCss('/modules/backend/formwidgets/richeditor/assets/css/richeditor.css', 'core');
+            $this->addJs('/modules/backend/formwidgets/richeditor/assets/js/build-min.js', 'core');
+            $this->addJs('/modules/backend/formwidgets/richeditor/assets/js/build-plugins-min.js', 'core');
+            $this->addJs('/modules/backend/formwidgets/codeeditor/assets/js/build-min.js', 'core');
 
             $this->addCss('assets/css/epigtor.css?v=1.0.8');
             $this->addJs('assets/js/epigtor.js?v=1.0.8');
@@ -132,4 +141,11 @@ class Epigtor extends ComponentBase
         return $backendUser && ($backendUser->hasAccess('rainlab.translate.manage_messages'));
     }
 
+    public function onUpload()
+    {
+        $controller = new Controller;
+        new MediaManager($controller, 'ocmediamanager');
+
+        return $controller->makeResponse(null);
+    }
 }

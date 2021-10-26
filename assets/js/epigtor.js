@@ -14,7 +14,10 @@
         this.$el       = $(element)
 
         this.originalHtml = null;
+        this.richEditor = null;
         this.requestHandler = this.$el.data('handler');
+        this.editorType = this.$el.data('type');
+        this.uploadHandler = this.$el.data('upload-handler');
         this.csrfToken = this.$el.data('csrf-token');
         this.editMessage = this.$el.data('message');
         if (this.$el.data('model') && this.$el.data('id')) {
@@ -46,9 +49,16 @@
     }
 
     Epigtor.prototype.clickCancel = function() {
-        this.$el.redactor('code.set', this.originalHtml)
-        this.$el.redactor('core.destroy')
-        this.$el.html(this.originalHtml);
+        if (this.editorType == 'richeditor') {
+            this.richEditor.data('oc.richEditor').setContent(this.originalHtml);
+            this.richEditor.data('oc.richEditor').dispose();
+            this.richEditor.find('>div>textarea:first').hide();
+            this.$el.find('>.rendered').show();
+        } else {
+            this.$el.redactor('code.set', this.originalHtml)
+            this.$el.redactor('core.destroy')
+            this.$el.html(this.originalHtml);
+        }
         this.refreshControlPanel()
         this.$controlPanel.removeClass('active')
         this.$edit.show()
@@ -57,8 +67,16 @@
     }
 
     Epigtor.prototype.clickSave = function() {
-        var html = this.$el.redactor('code.get')
-        this.$el.redactor('core.destroy')
+        if (this.editorType == 'richeditor') {
+            var html =this.richEditor.data('oc.richEditor').getContent();
+            this.richEditor.data('oc.richEditor').dispose();
+            this.richEditor.find('>div>textarea:first').hide();
+            this.$el.find('>.rendered').html(html);
+            this.$el.find('>.rendered').show();
+        } else {
+            var html = this.$el.redactor('code.get')
+            this.$el.redactor('core.destroy')
+        }
         this.refreshControlPanel()
         this.$controlPanel.removeClass('active')
         this.$edit.show()
@@ -74,14 +92,37 @@
     }
 
     Epigtor.prototype.clickEdit = function() {
-        this.originalHtml = this.$el.html();
+        if (this.editorType == 'richeditor') {
+            this.originalHtml = this.$el.find('>.rendered').html();
 
-        this.$el.redactor({
-            focus: true,
-            toolbar: false,
-            paragraphize: false,
-            linebreaks: true
-        });
+            this.richEditor = this.$el.find('>.epigtor-richeditor:first').richEditor();
+
+            var richEditorOpts = this.richEditor.data('oc.richEditor').editor.opts;
+
+            // Ensure that October recognizes AJAX requests from Froala
+            richEditorOpts.requestHeaders = {
+                'X-CSRF-TOKEN': this.csrfToken,
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+
+            richEditorOpts.imageUploadURL = richEditorOpts.fileUploadURL = window.location;
+            richEditorOpts.imageUploadParam = richEditorOpts.fileUploadParam = 'file_data';
+            richEditorOpts.imageUploadParams = richEditorOpts.fileUploadParams = {
+                _handler: this.uploadHandler,
+                X_OCTOBER_MEDIA_MANAGER_QUICK_UPLOAD: 1
+            };
+
+            this.$el.find('>.rendered').hide();
+        } else {
+            this.originalHtml = this.$el.html();
+
+            this.$el.redactor({
+                focus: true,
+                toolbar: false,
+                paragraphize: false,
+                linebreaks: true
+            });
+        }
 
         this.refreshControlPanel();
         this.$controlPanel.addClass('active');
