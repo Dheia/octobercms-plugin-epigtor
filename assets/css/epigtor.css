@@ -121,6 +121,7 @@
 .fr-popup .icon-edit:before {content:"\f044"}
 .fr-popup .icon-unlink:before {content:"\f127"}
 .fr-popup .icon-link:before {content:"\f0c1"}
+.fr-popup .icon-arrow-left:before {content:"\f060"}
 
 @font-face {
   font-family:'FontAwesome';

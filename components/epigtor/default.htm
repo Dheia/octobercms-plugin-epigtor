@@ -11,6 +11,8 @@
     <div class="rendered">{{ __SELF__.content|raw }}</div>
     <div
         class="epigtor-richeditor"
+        {% if __SELF__.toolbarButtons %}data-toolbar-buttons="{{ __SELF__.toolbarButtons }}"{% endif %}
+        {% if __SELF__.paragraphFormats %}data-paragraph-format="{{ __SELF__.paragraphFormats }}"{% endif %}
         data-legacy-mode="1">
         <div class="editor-write layout-cell">
             <textarea data-richeditor-textarea style="display:none">{{ __SELF__.content }}</textarea>

@@ -7,6 +7,7 @@ use RainLab\Translate\Classes\Translator;
 use RainLab\Translate\Models\Message;
 use System\Helpers\Cache as CacheHelper;
 use Media\Widgets\MediaManager;
+use Backend\Models\EditorSetting;
 
 class Epigtor extends ComponentBase
 {
@@ -55,6 +56,8 @@ class Epigtor extends ComponentBase
             $this->addJs('/modules/backend/formwidgets/richeditor/assets/js/build-plugins-min.js', 'core');
             $this->addJs('/modules/backend/formwidgets/codeeditor/assets/js/build-min.js', 'core');
 
+            $this->paragraphFormats = EditorSetting::getConfiguredFormats('html_paragraph_formats') ? json_encode(EditorSetting::getConfiguredFormats('html_paragraph_formats')) : null;
+
             $this->addCss('assets/css/epigtor.css?v=1.0.8');
             $this->addJs('assets/js/epigtor.js?v=1.0.8');
 
@@ -67,7 +70,9 @@ class Epigtor extends ComponentBase
         $this->isEditor = $this->checkEditor();
         $this->message = $this->property('message');
         $this->type = $this->property('type');
+        $this->toolbarButtons = $this->property('toolbarButtons');
         $this->setProperty('type', '');
+        $this->setProperty('toolbarButtons', '');
 
         if ($this->property('model')) {
             $model = $this->property('model');
