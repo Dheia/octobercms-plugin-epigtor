@@ -65,8 +65,9 @@ class Epigtor extends ComponentBase
 
             $this->paragraphFormats = EditorSetting::getConfiguredFormats('html_paragraph_formats') ? json_encode(EditorSetting::getConfiguredFormats('html_paragraph_formats')) : null;
 
-            $this->addCss('assets/css/epigtor.css?v=1.0.8');
-            $this->addJs('assets/js/epigtor.js?v=1.0.8');
+            $this->addCss('assets/css/epigtor.css?v=1.0.1');
+            $this->addJs('assets/js/epigtor-panel.js?v=1.0.1');
+            $this->addJs('assets/js/epigtor.js?v=1.0.1');
 
             $this->ace_vendor_path = Url::asset('/modules/backend/formwidgets/codeeditor/assets/vendor/ace');
 
@@ -95,6 +96,8 @@ class Epigtor extends ComponentBase
         }
 
         if ($this->type != 'richeditor') {
+            //convert nl2br
+            $content = nl2br($content);
             //replace paragraphs with break lines
             $content = str_replace(array('<p>','</p>'),array('','<br />'), $content);
             //remove all html tags except break lines
@@ -134,6 +137,11 @@ class Epigtor extends ComponentBase
 
         $key = post('message');
         $content = post('content');
+
+        if (post('type') == 'plain') {
+            $breaks = array("<br />","<br>","<br/>");  
+            $content = str_ireplace($breaks, "\r\n", $content);
+        }
 
         if (post('model')) {
             $modelClass = post('model')['model'];
