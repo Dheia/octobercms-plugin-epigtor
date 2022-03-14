@@ -91,7 +91,8 @@
             data: {
                 message: this.editMessage,
                 content: html,
-                model: this.editModel
+                model: this.editModel,
+                type: this.editorType,
             }
         })
     }
