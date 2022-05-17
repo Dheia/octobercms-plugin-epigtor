@@ -16,7 +16,7 @@ class Plugin extends PluginBase
             'name' => 'utopigs.epigtor::lang.plugin.name',
             'description' => 'utopigs.epigtor::lang.plugin.description',
             'author' => 'Utopig Studio',
-            'icon' => 'icon-circle'
+            'icon' => 'icon-pencil'
         ];
     }
 
