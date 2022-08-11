@@ -116,11 +116,11 @@ class Epigtor extends ComponentBase
 
             $this->paragraphFormats = EditorSetting::getConfiguredFormats('html_paragraph_formats') ? json_encode(EditorSetting::getConfiguredFormats('html_paragraph_formats')) : null;
 
-            $this->addCss('assets/css/epigtor.css?v=1.0.2');
-            $this->addJs('assets/js/epigtor-panel.js?v=1.0.2');
-            $this->addJs('assets/js/epigtor.js?v=1.0.2');
-            $this->addJs('assets/js/epigtor-image.js?v=1.0.2');
-            $this->addJs('assets/js/epigtor-link.js?v=1.0.2');
+            $this->addCss('assets/css/epigtor.css?v=2.0.0');
+            $this->addJs('assets/js/epigtor-panel.js?v=2.0.0');
+            $this->addJs('assets/js/epigtor.js?v=2.0.0');
+            $this->addJs('assets/js/epigtor-image.js?v=2.0.0');
+            $this->addJs('assets/js/epigtor-link.js?v=2.0.0');
 
             $this->ace_vendor_path = Url::asset('/modules/backend/formwidgets/codeeditor/assets/vendor/ace');
 
