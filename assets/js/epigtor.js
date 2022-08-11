@@ -37,11 +37,6 @@
             }
         })
 
-        // is this needed?
-        // this.$controlPanel.on('mouseenter', function(){
-        //     self.refreshControlPanel();
-        // })
-
         self.showControlPanel()
 
         this.$edit.on('click', function(){ self.clickEdit() })
@@ -167,14 +162,12 @@
 
     var old = $.fn.epigtor
 
-    $.fn.epigtor = function (option) {
-        var args = Array.prototype.slice.call(arguments, 1)
+    $.fn.epigtor = function () {
         return this.each(function () {
             var $this   = $(this)
             var data    = $this.data('oc.epigtor')
-            var options = $.extend({}, Epigtor.DEFAULTS, $this.data(), typeof option == 'object' && option)
-            if (!data) $this.data('oc.epigtor', (data = new Epigtor(this, options)))
-            else if (typeof option == 'string') data[option].apply(data, args)
+            var options = $.extend({}, Epigtor.DEFAULTS, $this.data())
+            if (!data) $this.data('oc.epigtor', (data = new Epigtor(this, options)));
         })
     }
 

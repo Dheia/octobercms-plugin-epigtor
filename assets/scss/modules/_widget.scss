@@ -1,0 +1,127 @@
+@font-face {
+  font-family: 'octo-icon';
+  src:  url('../../../../../../modules/system/assets/ui/font/octo-icon.eot?symvb&v=@{icon-font-version');
+  src:  url('../../../../../../modules/system/assets/ui/font/octo-icon.eot?symvb#iefix&v=@{icon-font-version') format('embedded-opentype'),
+    url('../../../../../../modules/system/assets/ui/font/octo-icon.ttf?symvb&v=@{icon-font-version') format('truetype'),
+    url('../../../../../../modules/system/assets/ui/font/octo-icon.woff?symvb&v=@{icon-font-version') format('woff'),
+    url('../../../../../../modules/system/assets/ui/font/octo-icon.svg?symvb#octo-icon&v=@{icon-font-version}') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+.epigtor-panel {
+  position: fixed;
+  bottom: 8px;
+  left: 9px;
+}
+
+.epigtor-panel-edit {
+  padding: 4px 9px;
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: 0 1px 5px rgba(0,0,0,.3);
+}
+
+.epigtor-panel-finish {
+  background-color: #ed9c57;
+}
+
+.epigtor-image {
+  position: absolute;
+  display: none;
+  background-color: #000000;
+  border: 2px dashed rgba(246, 231, 178, 0.5);
+}
+
+.epigtor-link {
+  position: absolute;
+  display: none;
+  border: 2px dashed rgba(246, 231, 178, 0.5);
+}
+
+.epigtor-image .epigtor-image-edit {
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.epig-popup {
+  display: none;
+  position: absolute;
+  background: white;
+  z-index: 9;
+  width: 300px;
+  text-align: left;
+}
+
+.control-epigtor {
+  display: none;
+  position: absolute;
+  text-align: right;
+  background: rgba(246, 231, 178, 0.1);
+  border: 2px dashed rgba(246, 231, 178, 0.5);
+  height: 20px;
+  width: 50px;
+  pointer-events: none;
+  z-index: 9000;
+}
+.control-epigtor.active,
+.control-epigtor.visible{
+  display: block;
+  z-index: 998;
+}
+
+.epigtor-image-container.visible,
+.epigtor-link-container.visible {
+  display: block;
+  z-index: 999;
+}
+.control-epigtor.active {
+  background: transparent;
+  border: none;
+}
+.control-epigtor button {
+  pointer-events: auto;
+  border: none;
+  width: 26px !important;
+  height: 30px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background-size: auto 30px;
+  text-indent: -9999px;
+  line-height: 0;
+  overflow: hidden;
+  border-radius: 1px;
+  position: absolute;
+}
+.control-epigtor button.epigtor-edit-button {
+  background-color: transparent;
+  background-image: url('../images/edit-icon.png');
+  top: -30px;
+  right: 0px;
+  position: absolute;
+}
+.control-epigtor button.epigtor-edit-button:hover {
+  background-position: 100% 0;
+}
+.control-epigtor button.epigtor-save-button,
+.control-epigtor button.epigtor-cancel-button {
+  height: 26px;
+  margin: 4px 2px;
+}
+.control-epigtor button.epigtor-save-button {
+  background-image: url('../images/save-icon.png');
+  top: -38px;
+  right: -28px;
+}
+.control-epigtor button.epigtor-save-button:hover {
+  background-position: 100% 0;
+}
+.control-epigtor button.epigtor-cancel-button {
+  background-image: url('../images/cancel-icon.png');
+  top: -38px;
+  right: 0px;
+}
+.control-epigtor button.epigtor-cancel-button:hover {
+  background-position: 100% 0;
+}

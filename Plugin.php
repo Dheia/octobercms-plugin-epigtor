@@ -8,7 +8,11 @@ class Plugin extends PluginBase
     /**
      * @var array Plugin dependencies
      */
-    public $require = ['RainLab.Translate'];
+    public $require = [
+        'RainLab.Translate',
+        'Utopigs.Banners',
+        'Utopigs.Linkable',
+    ];
 
     public function pluginDetails()
     {

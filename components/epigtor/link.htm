@@ -1,0 +1,39 @@
+{% if __SELF__.isEditor %}
+<span
+    data-control="epigtor-link"
+    data-type="link"
+    data-handler="{{ __SELF__ }}::onSaveLink"
+    data-handler-delete="{{ __SELF__ }}::onDeleteLink"
+    data-handler-type-options="{{ __SELF__ }}::onGetTypeOptions"
+    data-handler-reference-options="{{ __SELF__ }}::onGetReferenceOptions"
+    data-link-partial="{{ __SELF__.linkPartial }}"
+    data-message="{{ __SELF__.message }}"
+    data-model-class="{{ __SELF__.model_class }}"
+    data-model-id="{{ __SELF__.model_id }}"
+    data-link-id="{{ __SELF__.content.id }}"
+    data-label-create="{{ __SELF__.labelCreate }}"
+    data-label-delete="{{ __SELF__.labelDelete }}"
+    data-label-delete-confirm="{{ __SELF__.labelDeleteConfirm }}"
+    data-label-save="{{ __SELF__.labelSave }}"
+    data-label-cancel="{{ __SELF__.labelCancel }}"
+    data-label-link-text="{{ __SELF__.labelLinkText }}"
+    data-label-link-type="{{ __SELF__.labelLinkType }}"
+    data-label-link-url="{{ __SELF__.labelLinkUrl }}"
+    data-label-link-reference="{{ __SELF__.labelLinkReference }}"
+    data-label-link-is-new-tab="{{ __SELF__.labelLinkIsNewTab }}"
+    data-link-content = "{{ __SELF__.content }}"
+    data-show-delete="{{ __SELF__.showDelete ? 'true' : 'false' }}"
+    data-element-id="{{ __SELF__.uploadId }}">
+    {% if __SELF__.content %}
+    <span id="epigtor-{{ __SELF__.uploadId }}">
+        {% partial __SELF__.linkPartial link=__SELF__.content %}
+    </span>
+    {% else %}
+    <span id="epigtor-{{ __SELF__.uploadId }}">
+        {% partial __SELF__.linkEmptyPartial labelCreate=__SELF__.labelCreate %}
+    </span>
+    {% endif %}
+</span>
+{% else %}
+    {% partial __SELF__.linkPartial link=__SELF__.content %}
+{% endif %}

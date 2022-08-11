@@ -1,25 +1,9 @@
-{% if __SELF__.type == 'richeditor' %}
-<div
-    data-control="epigtor"
-    data-type="richeditor"
-    data-handler="{{ __SELF__ }}::onSave"
-    data-message="{{ __SELF__.message }}"
-    data-model="{{ __SELF__.model_class }}"
-    data-id="{{ __SELF__.model_id }}"
-    data-upload-handler="{{ __SELF__ }}::onUpload"
-    data-csrf-token="{{ __SELF__.csrf_token }}">
-    <div class="rendered">{{ __SELF__.content|raw }}</div>
-    <div
-        class="epigtor-richeditor"
-        {% if __SELF__.toolbarButtons %}data-toolbar-buttons="{{ __SELF__.toolbarButtons }}"{% endif %}
-        {% if __SELF__.paragraphFormats %}data-paragraph-format="{{ __SELF__.paragraphFormats }}"{% endif %}
-        data-ace-vendor-path="{{ __SELF__.ace_vendor_path }}"
-        data-legacy-mode="1">
-        <div class="editor-write layout-cell">
-            <textarea data-richeditor-textarea style="display:none">{{ __SELF__.content }}</textarea>
-        </div>
-    </div>
-</div>
+{% if __SELF__.type == 'image' %}
+    {% partial __SELF__~'::image' %}
+{% elseif __SELF__.type == 'link' %}
+    {% partial __SELF__~'::link' %}
+{% elseif __SELF__.type == 'richeditor' %}
+    {% partial __SELF__~'::richeditor' %}
 {% else %}
 <span
     data-control="epigtor"
