@@ -135,17 +135,11 @@ class Epigtor extends ComponentBase
         $this->type = $this->property('type') ?: 'plain';
         $this->toolbarButtons = $this->property('toolbarButtons');
         $this->showDelete = $this->property('showDelete', false);
-        $this->setProperty('type', '');
-        $this->setProperty('toolbarButtons', '');
-        $this->setProperty('content', '');
-        $this->setProperty('showDelete', false);
 
         if ($this->property('model')) {
-            $model = $this->property('model');
+            $model = clone $this->property('model');
             $message = $this->message;
             $content = $model->$message;
-            //reset optional model property, if we don't do this and the next component in template doesn't set it, it won't be empty!
-            $this->setProperty('model', '');
         } else {
             if (!in_array($this->type, ['image', 'link'])) {
                 //TODO: check if message already exists in db, and if not, load default message from theme config files if it exists
@@ -180,10 +174,6 @@ class Epigtor extends ComponentBase
             if (isset($model)) {
                 $this->model_class = get_class($model);
                 $this->model_id = $model->id;
-            } else {
-                //reset properties for next component
-                $this->model_class = NULL;
-                $this->model_id = NULL;
             }
         }
 
@@ -248,6 +238,15 @@ class Epigtor extends ComponentBase
             }
             $this->content = $content;
         }
+
+        //reset properties for next component
+        $this->setProperty('type', '');
+        $this->setProperty('toolbarButtons', '');
+        $this->setProperty('content', '');
+        $this->setProperty('showDelete', false);
+        $this->setProperty('model', '');
+        $this->model_class = NULL;
+        $this->model_id = NULL;
     }
 
     protected function decorateFileAttributes($file)
