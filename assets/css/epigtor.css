@@ -19892,6 +19892,9 @@
   border-top-right-radius: 0;
   border-top-left-radius: 0;
 }
+.fr-toolbar .fr-command.fr-btn, .fr-popup .fr-command.fr-btn {
+  font-size: 17px;
+}
 .epigtor .fancy-layout .secondary-content-tabs .field-richeditor .fr-toolbar {
   background: #fff;
 }
