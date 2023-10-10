@@ -3,3 +3,4 @@ v1.0.1: Master edit button
 v2.0.0: Image and link edition
 v2.0.1: Fix bugs
 v2.0.2: Remove forced dependencies, as they are not needed if the links or images functionalities are not used
+v2.0.3: Fix font size in richeditor
