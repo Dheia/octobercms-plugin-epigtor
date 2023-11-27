@@ -96,12 +96,14 @@ class Epigtor extends ComponentBase
             $this->addCss('assets/vendor/redactor/redactor.css');
             $this->addJs('assets/vendor/redactor/redactor.js');
 
-            // $this->addJs('/modules/system/assets/ui/js/foundation.baseclass.js');
-            // $this->addJs('/modules/system/assets/ui/js/foundation.controlutils.js');
-            // $this->addCss('/modules/backend/formwidgets/richeditor/assets/css/richeditor.css', 'core');
+            $this->addJs('assets/vendor/oc2/foundation.baseclass.js');
+            $this->addJs('assets/vendor/oc2/foundation.controlutils.js');
+            $this->addCss('assets/vendor/oc2/richeditor/assets/css/richeditor.css', 'core');
+            $this->addJs('assets/vendor/oc2/richeditor/assets/js/build-min.js', 'core');
             // $this->addJs('/modules/backend/formwidgets/richeditor/assets/js/build-min.js', 'core');
-            // $this->addJs('/modules/backend/formwidgets/richeditor/assets/js/build-plugins-min.js', 'core');
+            $this->addJs('assets/vendor/oc2/richeditor/assets/js/build-plugins-min.js', 'core');
             // $this->addJs('/modules/backend/formwidgets/codeeditor/assets/js/build-min.js', 'core');
+            $this->addJs('assets/vendor/oc2/codeeditor/assets/js/build-min.js', 'core');
 
             // $this->addJs('/modules/backend/assets/js/october.lang.js');
             // $this->addJs('/modules/backend/assets/vendor/dropzone/dropzone.js');
