@@ -80,6 +80,8 @@
         this.labelDeleteConfirm = this.$el.data('label-delete-confirm');
 
         var $fileUpload = this.$imageWidget.data('oc.fileUpload');
+        // disable update button when file is uploaded
+        $fileUpload.dropzone.on('addedfile', $fileUpload.proxy(this.onUploadStart));
         $fileUpload.dropzone.on('success', $fileUpload.proxy(this.onUploadSuccess));
 
         // remove onclick event from image preview (set in fileupload.js)
@@ -120,6 +122,11 @@
         }
     }
 
+    EpigtorImage.prototype.onUploadStart = function(file) {
+        var epigtorImage = $('#epigtor-image-'+this.$el.attr('id')).data('oc.epigtorImage');
+        epigtorImage.$save.prop('disabled', true);
+    }
+
     EpigtorImage.prototype.onUploadSuccess = function(file, response) {
         var epigtorImage = $('#epigtor-image-'+this.$el.attr('id')).data('oc.epigtorImage');
         epigtorImage.changed = true;
@@ -134,6 +141,7 @@
             },
             complete: function() {
                 eval(epigtorImage.refreshCode);
+                epigtorImage.$save.prop('disabled', false);
             }
         })
     }

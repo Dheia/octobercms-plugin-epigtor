@@ -14304,7 +14304,7 @@
   display: none;
 }
 .epigtor .field-fileupload .upload-object .icon-container:after {
-  background-image: url("../../../../../system/assets/ui/images/loader-transparent.svg");
+  background-image: url("../images/loader-transparent.svg");
   position: absolute;
   content: " ";
   width: 40px;
