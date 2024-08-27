@@ -139,120 +139,11 @@ class Epigtor extends ComponentBase
         $this->type = $this->property('type') ?: 'plain';
         $this->toolbarButtons = $this->property('toolbarButtons');
         $this->showDelete = $this->property('showDelete', false);
-        $this->model_class = NULL;
-        $this->model_id = NULL;
-        $this->content = NULL;
+        $this->model_class = null;
+        $this->model_id = null;
+        $this->content = null;
         $this->cssClass = $this->property('cssClass');
-
-        if ($this->property('model')) {
-            $model = clone $this->property('model');
-            $message = $this->message;
-            $content = $model->$message;
-        } else {
-            if (!in_array($this->type, ['image', 'link'])) {
-                //TODO: check if message already exists in db, and if not, load default message from theme config files if it exists
-                $content = Message::trans($this->message);
-            }
-        }
-
-        if ($this->type == 'plain') {
-            //convert nl2br
-            $content = nl2br($content);
-            //replace paragraphs with break lines
-            $content = str_replace(array('<p>','</p>'),array('','<br />'), $content);
-            //remove all html tags except break lines
-            $content = strip_tags($content, '<br>');
-            //remove EOL
-            $content = preg_replace( "/\r|\n/", "", $content);
-            //remove excess <br> or <br /> from the end of the text
-            $content = preg_replace('#(( ){0,}<br( {0,})(/{0,1})>){1,}$#i', '', $content);
-        }
-
-        if (in_array($this->type, ['plain', 'richeditor'])) {
-            if (!$this->isEditor) {
-                //reset properties for next component
-                $this->setProperty('type', '');
-                $this->setProperty('toolbarButtons', '');
-                $this->setProperty('content', '');
-                $this->setProperty('showDelete', false);
-                $this->setProperty('model', '');
-                $this->setProperty('cssClass', '');
-                return $content;
-            }
-    
-            if (!$content) {
-                $content = "[empty]";
-            }
-    
-            $this->content = $content;
-    
-            if (isset($model)) {
-                $this->model_class = get_class($model);
-                $this->model_id = $model->id;
-            }
-        }
-
-        if ($this->type == 'image') {
-            if (!isset($model)) {
-                $image = Image::where('code', $this->message)->first();
-                $content = $image->image ?? null;
-            }
-            if ($content && !$content->title) {
-                $content->title_default = $this->property('alt');
-            }
-            $this->imagePartial = $this->property('partial');
-            $this->imageEmptyPartial = $this->alias.'::image-empty';
-
-            if ($this->isEditor) {
-                $content = $this->decorateFileAttributes($content);
-                if (isset($model)) {
-                    $this->model_class = get_class($model);
-                    $this->model_id = $model->id;
-                    $this->uploadId = str_slug($this->model_class).'-'.$this->model_id.'-'.$this->message;
-                } else {
-                    $this->uploadId = 'image-'.$this->message;
-                }
-                $this->refreshCode = $this->property('refresh');
-                $this->labelCreate = Lang::get('utopigs.epigtor::lang.image.create');
-                $this->labelDelete = Lang::get('utopigs.epigtor::lang.image.delete');
-                $this->labelDeleteConfirm = Lang::get('utopigs.epigtor::lang.image.delete_confirm');
-                $this->labelSave = Lang::get('utopigs.epigtor::lang.image.save');
-                $this->labelCancel = Lang::get('utopigs.epigtor::lang.image.cancel');
-                $this->labelUpload = Lang::get('utopigs.epigtor::lang.image.upload');
-                $this->labelReplace = Lang::get('utopigs.epigtor::lang.image.replace');
-                $this->labelImageTitle = Lang::get('utopigs.epigtor::lang.image.title');
-            }
-
-            $this->content = $content;
-        }
-
-        if ($this->type == 'link') {
-            $this->linkPartial = $this->property('partial');
-            $this->linkEmptyPartial = $this->alias.'::link-empty';
-            if (!isset($model)) {
-                $content = Link::where('code', $this->message)->first();
-            }
-            if ($this->isEditor) {
-                if (isset($model)) {
-                    $this->model_class = get_class($model);
-                    $this->model_id = $model->id;
-                    $this->uploadId = str_slug($this->model_class).'-'.$this->model_id.'-'.$this->message;
-                } else {
-                    $this->uploadId = 'link-'.$this->message;
-                }
-                $this->labelCreate = Lang::get('utopigs.epigtor::lang.link.create');
-                $this->labelDelete = Lang::get('utopigs.epigtor::lang.link.delete');
-                $this->labelDeleteConfirm = Lang::get('utopigs.epigtor::lang.link.delete_confirm');
-                $this->labelSave = Lang::get('utopigs.epigtor::lang.link.save');
-                $this->labelCancel = Lang::get('utopigs.epigtor::lang.link.cancel');
-                $this->labelLinkText = Lang::get('utopigs.epigtor::lang.link.text');
-                $this->labelLinkType = Lang::get('utopigs.epigtor::lang.link.type');
-                $this->labelLinkUrl = Lang::get('utopigs.epigtor::lang.link.url');
-                $this->labelLinkReference = Lang::get('utopigs.epigtor::lang.link.reference');
-                $this->labelLinkIsNewTab = Lang::get('utopigs.epigtor::lang.link.is_new_tab');
-            }
-            $this->content = $content;
-        }
+        $propertyModel = $this->property('model');
 
         //reset properties for next component
         $this->setProperty('type', '');
@@ -261,6 +152,136 @@ class Epigtor extends ComponentBase
         $this->setProperty('showDelete', false);
         $this->setProperty('model', '');
         $this->setProperty('cssClass', '');
+        $this->setProperty('model', '');
+
+        $content = null;
+        
+        if ($propertyModel) {
+            /** @var stdClass $model */            
+            $model = clone $propertyModel; // why clone?
+            $message = $this->message;
+            $content = $model->$message;
+            $this->model_class = get_class($model);
+            $this->model_id = $model->id;
+        } else {
+            if (in_array($this->type, ['plain', 'richeditor'])) {
+                //TODO: check if message already exists in db, and if not, load default message from theme config files if it exists
+                $content = Message::trans($this->message);
+            }
+            if ($this->type == 'image') {
+                $image = Image::where('code', $this->message)->first();
+                $content = $image->image ?? null;
+            }
+            if ($this->type == 'link') {
+                $content = Link::where('code', $this->message)->first();
+            }
+        }
+
+        if ($this->type == 'plain') {
+            return $this->renderPlain($content);
+        }
+
+        if ($this->type == 'richeditor') {
+            return $this->renderRicheditor($content);
+        }
+
+        if ($this->type == 'image') {
+            return $this->renderImage($content);
+        }
+
+        if ($this->type == 'link') {
+            return $this->renderLink($content);
+        }
+    }
+
+    private function renderPlain($content)
+    {
+        //convert nl2br
+        $content = nl2br($content);
+        //replace paragraphs with break lines
+        $content = str_replace(array('<p>','</p>'),array('','<br />'), $content);
+        //remove all html tags except break lines
+        $content = strip_tags($content, '<br>');
+        //remove EOL
+        $content = preg_replace( "/\r|\n/", "", $content);
+        //remove excess <br> or <br /> from the end of the text
+        $content = preg_replace('#(( ){0,}<br( {0,})(/{0,1})>){1,}$#i', '', $content);
+
+        if (!$this->isEditor) {
+            return $content;
+        }
+
+        if (!$content) {
+            $content = "[empty]";
+        }
+
+        $this->content = $content;
+    }
+
+    private function renderRicheditor($content)
+    {
+        if (!$this->isEditor) {
+            return $content;
+        }
+
+        if (!$content) {
+            $content = "[empty]";
+        }
+
+        $this->content = $content;
+    }
+
+    private function renderImage($content)
+    {
+        if ($content && !$content->title) {
+            $content->title_default = $this->property('alt');
+        }
+        $this->imagePartial = $this->property('partial');
+        $this->imageEmptyPartial = $this->alias.'::image-empty';
+
+        if ($this->isEditor) {
+            $content = $this->decorateFileAttributes($content);
+            if ($this->model_class) {
+                $this->uploadId = str_slug($this->model_class).'-'.$this->model_id.'-'.$this->message;
+            } else {
+                $this->uploadId = 'image-'.$this->message;
+            }
+            $this->refreshCode = $this->property('refresh');
+            $this->labelCreate = Lang::get('utopigs.epigtor::lang.image.create');
+            $this->labelDelete = Lang::get('utopigs.epigtor::lang.image.delete');
+            $this->labelDeleteConfirm = Lang::get('utopigs.epigtor::lang.image.delete_confirm');
+            $this->labelSave = Lang::get('utopigs.epigtor::lang.image.save');
+            $this->labelCancel = Lang::get('utopigs.epigtor::lang.image.cancel');
+            $this->labelUpload = Lang::get('utopigs.epigtor::lang.image.upload');
+            $this->labelReplace = Lang::get('utopigs.epigtor::lang.image.replace');
+            $this->labelImageTitle = Lang::get('utopigs.epigtor::lang.image.title');
+        }
+
+        $this->content = $content;
+    }
+
+    private function renderLink($content)
+    {
+        $this->linkPartial = $this->property('partial');
+        $this->linkEmptyPartial = $this->alias.'::link-empty';
+        if ($this->isEditor) {
+            if ($this->model_class) {
+                $this->uploadId = str_slug($this->model_class).'-'.$this->model_id.'-'.$this->message;
+            } else {
+                $this->uploadId = 'link-'.$this->message;
+            }
+            $this->labelCreate = Lang::get('utopigs.epigtor::lang.link.create');
+            $this->labelDelete = Lang::get('utopigs.epigtor::lang.link.delete');
+            $this->labelDeleteConfirm = Lang::get('utopigs.epigtor::lang.link.delete_confirm');
+            $this->labelSave = Lang::get('utopigs.epigtor::lang.link.save');
+            $this->labelCancel = Lang::get('utopigs.epigtor::lang.link.cancel');
+            $this->labelLinkText = Lang::get('utopigs.epigtor::lang.link.text');
+            $this->labelLinkType = Lang::get('utopigs.epigtor::lang.link.type');
+            $this->labelLinkUrl = Lang::get('utopigs.epigtor::lang.link.url');
+            $this->labelLinkReference = Lang::get('utopigs.epigtor::lang.link.reference');
+            $this->labelLinkIsNewTab = Lang::get('utopigs.epigtor::lang.link.is_new_tab');
+        }
+        $this->content = $content;
     }
 
     protected function decorateFileAttributes($file)
