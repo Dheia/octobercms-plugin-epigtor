@@ -73,6 +73,7 @@
         if (this.editorType == 'richeditor') {
             var html =this.richEditor.data('oc.richEditor').getContent();
             this.richEditor.data('oc.richEditor').dispose();
+            this.$el.find('>.epigtor-richeditor:first')[0].dataset.control = '';
             this.richEditor.find('>div>textarea:first').hide();
             this.$el.find('>.rendered').html(html);
             this.$el.find('>.rendered').show();
@@ -98,6 +99,8 @@
     Epigtor.prototype.clickEdit = function() {
         if (this.editorType == 'richeditor') {
             this.originalHtml = this.$el.find('>.rendered').html();
+
+            this.$el.find('>.epigtor-richeditor:first')[0].dataset.control = 'richeditor';
 
             this.richEditor = this.$el.find('>.epigtor-richeditor:first').richEditor({
                 toolbarButtons: this.toolbarButtons,
