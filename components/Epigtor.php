@@ -16,6 +16,7 @@ use Lang;
 use Response;
 use System\Models\File;
 use Utopigs\Banners\Models\Image;
+use Utopigs\Banners\Models\Message as ModelsMessage;
 use Utopigs\Linkable\Models\Link;
 
 class Epigtor extends ComponentBase
@@ -28,6 +29,7 @@ class Epigtor extends ComponentBase
     public $ace_vendor_path;
     public $type;
     public $toolbarButtons;
+    public $globalToolbarButtons;
     public $paragraphFormats;
     public $csrf_token;
     public $imagePartial;
@@ -94,21 +96,14 @@ class Epigtor extends ComponentBase
         $this->isEditor = $this->checkEditor();
 
         if ($this->isEditor) {
-            $this->addCss('assets/vendor/redactor/redactor.css');
-            $this->addJs('assets/vendor/redactor/redactor.js');
 
-            $this->addJs('assets/vendor/oc2/foundation.baseclass.js');
-            $this->addJs('assets/vendor/oc2/foundation.controlutils.js');
-            $this->addCss('assets/vendor/oc2/richeditor/assets/css/richeditor.css', 'core');
-            $this->addJs('assets/vendor/oc2/richeditor/assets/js/build-min.js', 'core');
-            $this->addJs('assets/vendor/oc2/richeditor/assets/js/build-plugins-min.js', 'core');
-            $this->addJs('assets/vendor/oc2/codeeditor/assets/js/build-min.js', 'core');
+            $this->addJs('/modules/backend/assets/foundation/scripts/foundation/foundation.baseclass.js');
+            $this->addJs('/modules/backend/assets/foundation/scripts/foundation/foundation.controlutils.js');
 
-            $this->addJs('/modules/backend/assets/js/october/october.lang.js');
-            $this->addJs('/modules/backend/assets/vendor/dropzone/dropzone.js');
-            $this->addJs('/modules/backend/formwidgets/fileupload/assets/js/fileupload.js', 'core');
-
-            // $this->addJs('/modules/system/assets/ui/js/select.js');
+            $this->addCss('/modules/backend/formwidgets/richeditor/assets/css/richeditor.css');
+            $this->addJs('/modules/backend/formwidgets/richeditor/assets/js/build-min.js');
+            $this->addJs('/modules/backend/formwidgets/richeditor/assets/js/richeditor.js');
+            $this->addJs('/modules/backend/formwidgets/codeeditor/assets/js/build-min.js');
 
             // $froala_custom_defaults = Settings::get('froala_custom_defaults_file');
             // if ($froala_custom_defaults) {
@@ -116,6 +111,7 @@ class Epigtor extends ComponentBase
             // }
 
             $this->paragraphFormats = EditorSetting::getConfiguredFormats('html_paragraph_formats') ? json_encode(EditorSetting::getConfiguredFormats('html_paragraph_formats')) : null;
+            $this->globalToolbarButtons = str_replace(" ", "", EditorSetting::getConfigured('html_toolbar_buttons'));
 
             $this->addCss('assets/css/epigtor.css?v=3.0.2');
             $this->addJs('assets/js/epigtor-panel.js?v=3.0.2');
@@ -123,7 +119,7 @@ class Epigtor extends ComponentBase
             $this->addJs('assets/js/epigtor-image.js?v=3.0.2');
             $this->addJs('assets/js/epigtor-link.js?v=3.0.2');
 
-            $this->ace_vendor_path = Url::asset('/plugins/utopigs/epigtor/assets/vendor/oc2/codeeditor/assets/vendor/ace');
+            $this->ace_vendor_path = Url::asset('/modules/backend/formwidgets/codeeditor/assets/vendor/ace');
 
             $this->csrf_token = csrf_token();
         }
@@ -135,6 +131,7 @@ class Epigtor extends ComponentBase
         $this->message = $this->property('message');
         $this->type = $this->property('type') ?: 'plain';
         $this->toolbarButtons = $this->property('toolbarButtons');
+
         $this->showDelete = $this->property('showDelete', false);
         $this->model_class = NULL;
         $this->model_id = NULL;
@@ -146,9 +143,14 @@ class Epigtor extends ComponentBase
             $message = $this->message;
             $content = $model->$message;
         } else {
-            if (!in_array($this->type, ['image', 'link'])) {
+            if ($this->type == 'plain') {
                 //TODO: check if message already exists in db, and if not, load default message from theme config files if it exists
                 $content = Message::trans($this->message);
+            }
+            if ($this->type == 'richeditor') {
+                $content = ModelsMessage::where('code', $this->message)->first()->content;
+                // TODO: get toolbar buttons from model config
+                // TODO: pass model id to component to generate edit link
             }
         }
 
@@ -298,12 +300,19 @@ class Epigtor extends ComponentBase
             $model->$key = $content;
             $model->save();
         } else {
-            $messages = Message::where('locale', $locale)->first();
-            $message = $messages->data[$key] ?? '';
+            if (post('type') == 'plain') {
+                $messages = Message::where('locale', $locale)->first();
+                $message = $messages->data[$key] ?? '';
 
-            if ($content != $message) {
-                $messages->updateMessage($locale, $key, $content);
-                CacheHelper::clear();
+                if ($content != $message) {
+                    $messages->updateMessage($locale, $key, $content);
+                    CacheHelper::clear();
+                }
+            }
+            if (post('type') == 'richeditor') {
+                $message = ModelsMessage::where('code', $key)->first();
+                $message->content = $content;
+                $message->save();
             }
         }
     }
