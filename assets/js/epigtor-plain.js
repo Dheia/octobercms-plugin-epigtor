@@ -151,10 +151,19 @@
         }
     });
 
+    // prevent redactor from losing focus when the editable text is in a clickable element
     $(document).on('click','.redactor-editor',function(e){
         e.preventDefault();
         e.stopPropagation();
         return false;
+    });
+    // prevent redactor from losing focus if pressing space when the editable text is in a clickable element (in chrome)
+    $(document).on('keyup', '.redactor-editor', function(e){
+        if (e.keyCode == 32) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
     });
 
 }(window.jQuery);
