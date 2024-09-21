@@ -2476,14 +2476,6 @@
   background-position: 100% 0;
 }
 
-.epigtor-richeditor .fr-element :first-child {
-  margin-top: 0;
-}
-
-.epigtor-richeditor .fr-toolbar.fr-top {
-  position: sticky;
-}
-
 .clearfix:after {
   clear: both;
   content: "";
@@ -5876,6 +5868,25 @@ span.fr-img-caption.fr-view.fr-dii.fr-fir {
 .fr-quick-insert a.fr-floating-btn {
   color: var(--oc-toolbar-color, #222);
   text-decoration: none;
+}
+
+.epigtor-richeditor .fr-element :first-child {
+  margin-top: 0;
+}
+
+.epigtor-richeditor .fr-toolbar.fr-top {
+  position: sticky;
+}
+
+.epigtor-richeditor .fr-box.fr-fullscreen .fr-toolbar.fr-top {
+  background-color: #ffffff;
+}
+
+.fr-popup .fr-buttons .fr-btn[data-cmd=mmVideoManager],
+.fr-popup .fr-buttons .fr-btn[data-cmd=mmFileManager],
+.fr-popup .fr-buttons .fr-btn[data-cmd=mmImageManager],
+.fr-popup .fr-buttons .fr-btn[data-cmd=mmAudioManager] {
+  display: none;
 }
 
 /*# sourceMappingURL=epigtor.css.map */

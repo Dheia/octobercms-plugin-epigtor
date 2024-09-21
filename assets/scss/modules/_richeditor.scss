@@ -4,3 +4,12 @@
 .epigtor-richeditor .fr-toolbar.fr-top {
   position: sticky;
 }
+.epigtor-richeditor .fr-box.fr-fullscreen .fr-toolbar.fr-top {
+  background-color: #ffffff;
+}
+.fr-popup .fr-buttons .fr-btn[data-cmd="mmVideoManager"],
+.fr-popup .fr-buttons .fr-btn[data-cmd="mmFileManager"],
+.fr-popup .fr-buttons .fr-btn[data-cmd="mmImageManager"],
+.fr-popup .fr-buttons .fr-btn[data-cmd="mmAudioManager"] {
+  display: none;
+}
