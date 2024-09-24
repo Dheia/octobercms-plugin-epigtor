@@ -108,6 +108,7 @@
             _handler: this.uploadHandler,
             X_OCTOBER_MEDIA_MANAGER_QUICK_UPLOAD: 1
         };
+        richEditorOpts.pastePlain = true;
 
         this.$el.find('>.rendered').hide();
 
