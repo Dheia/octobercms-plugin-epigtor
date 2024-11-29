@@ -1,0 +1,13 @@
+.epigtor-richeditor .fr-element :first-child {
+  margin-top: 0;
+}
+.epigtor-richeditor .fr-toolbar.fr-top {
+  position: sticky;
+  background-color: #ffffff;
+}
+.fr-popup .fr-buttons .fr-btn[data-cmd="mmVideoManager"],
+.fr-popup .fr-buttons .fr-btn[data-cmd="mmFileManager"],
+.fr-popup .fr-buttons .fr-btn[data-cmd="mmImageManager"],
+.fr-popup .fr-buttons .fr-btn[data-cmd="mmAudioManager"] {
+  display: none;
+}
