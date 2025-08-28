@@ -3,6 +3,7 @@
 use Backend\Models\EditorSetting;
 use BackendAuth;
 use Cms\Classes\ComponentBase;
+use Cms\Classes\PageManager;
 use Url;
 use Utopigs\Epigtor\Models\Settings;
 use Utopigs\Epigtor\Traits\EpigtorImage;
@@ -146,6 +147,16 @@ class Epigtor extends ComponentBase
             $model = clone $this->propertyModel; // why clone?
             $message = $this->message;
             $content = $model->$message;
+            if ($this->type == 'link' && is_string($content)) {
+                $link = $message;
+                $linkTitle = $message . '_title';
+                $linkIsNewTab = $message . '_is_new_tab';
+                $content = [
+                    'url' => $this->parseOctoberLink($model->$link),
+                    'text' => $model->$linkTitle,
+                    'is_new_tab' => $model->$linkIsNewTab,
+                ];
+            }
             $this->model_class = get_class($model);
             $this->model_id = $model->id;
 
@@ -194,6 +205,16 @@ class Epigtor extends ComponentBase
     {
         $backendUser = BackendAuth::getUser();
         return $backendUser && ($backendUser->hasAccess('rainlab.translate.manage_messages'));
+    }
+
+    protected function parseOctoberLink($value)
+    {
+        if (is_string($value) && str_starts_with($value, 'october://')) {
+            $url = PageManager::url($value);
+            return $url;
+        }
+
+        return $value;
     }
 
 }

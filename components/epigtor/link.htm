@@ -1,5 +1,7 @@
 {% if __SELF__.isEditor %}
-<span
+    {% partial __SELF__.linkPartial link=__SELF__.content cssClass=__SELF__.cssClass %}
+<!-- TODO: fix for new links
+    <span
     data-control="epigtor-link"
     data-type="link"
     data-handler="{{ __SELF__ }}::onSaveLink"
@@ -21,7 +23,7 @@
     data-label-link-url="{{ __SELF__.labelLinkUrl }}"
     data-label-link-reference="{{ __SELF__.labelLinkReference }}"
     data-label-link-is-new-tab="{{ __SELF__.labelLinkIsNewTab }}"
-    data-link-content = "{{ __SELF__.content }}"
+    data-link-content = "{{ __SELF__.content|json_encode() }}"
     data-show-delete="{{ __SELF__.showDelete ? 'true' : 'false' }}"
     data-element-id="{{ __SELF__.uploadId }}"
     data-css-class="{{ __SELF__.cssClass }}"
@@ -35,7 +37,7 @@
         {% partial __SELF__.linkEmptyPartial labelCreate=__SELF__.labelCreate %}
     </span>
     {% endif %}
-</span>
+</span> -->
 {% else %}
     {% partial __SELF__.linkPartial link=__SELF__.content cssClass=__SELF__.cssClass %}
 {% endif %}
