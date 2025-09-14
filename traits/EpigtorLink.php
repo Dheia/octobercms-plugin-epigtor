@@ -1,7 +1,6 @@
 <?php namespace Utopigs\Epigtor\Traits;
 
 use Lang;
-use Utopigs\Linkable\Models\Link;
 
 trait EpigtorLink
 {
@@ -13,7 +12,7 @@ trait EpigtorLink
 
     private function getContentLink()
     {
-        $content = Link::where('code', $this->message)->first();
+        $content = \Utopigs\Linkable\Models\Link::where('code', $this->message)->first();
 
         return $content;
     }
@@ -57,9 +56,9 @@ trait EpigtorLink
         $cssClass = post('cssClass');
 
         if ($linkId) {
-            $link = Link::findOrFail($linkId);
+            $link = \Utopigs\Linkable\Models\Link::findOrFail($linkId);
         } else {
-            $link = new Link;
+            $link = new \Utopigs\Linkable\Models\Link;
             if ($modelClass) {
                 $model = $modelClass::findOrFail($modelId);
                 $link->field = $attribute;
@@ -101,7 +100,7 @@ trait EpigtorLink
         $modelId = post('model')['id'];
         $attribute = post('message');
 
-        Link::findOrFail($linkId)->delete();
+        \Utopigs\Linkable\Models\Link::findOrFail($linkId)->delete();
 
         if ($modelClass) {
             $widgetId = str_slug($modelClass).'-'.$modelId.'-'.$attribute;
@@ -118,7 +117,7 @@ trait EpigtorLink
 
     public function onGetTypeOptions()
     {
-        $link = new Link;
+        $link = new \Utopigs\Linkable\Models\Link;
         $options = $link->getTypeOptions();
         foreach ($options as $key => $value) {
             $options[$key] = Lang::get($value);
