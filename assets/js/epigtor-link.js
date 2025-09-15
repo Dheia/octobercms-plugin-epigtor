@@ -44,7 +44,7 @@
 
         this.$linkContainer = $(epigtorLinkModalHtml(this.linkContent, this.elementId,
             this.showDelete, this.labelDelete, this.labelSave, this.labelCancel, this.labelLinkText, this.labelLinkType, this.labelLinkUrl,
-            this.labelLinkReference, this.labelLinkIsNewTab, this.isOldLink));
+            this.labelLinkReference, this.labelLinkIsNewTab));
         $(document.body).append(this.$linkContainer);
 
         epigtorDragElement(this.$linkContainer[0]);
@@ -165,6 +165,7 @@
                 reference: newReference,
                 is_new_tab: newIsNewTab ? 1 : 0,
                 cssClass: this.cssClass,
+                isOldLink: this.isOldLink ? 1 : 0,
             },
             complete: function(response) {
                 that.originalText = newText;
@@ -334,7 +335,7 @@
 }(window.jQuery);
 
 function epigtorLinkModalHtml(content, elementId,
-        showDelete, labelDelete, labelSave, labelCancel, labelLinkText, labelLinkType, labelLinkUrl, labelLinkReference, labelLinkIsNewTab, isOldLink) {
+        showDelete, labelDelete, labelSave, labelCancel, labelLinkText, labelLinkType, labelLinkUrl, labelLinkReference, labelLinkIsNewTab) {
     let deleteButton = `<button type="button" class="epigtor-link-delete btn btn-danger">${labelDelete}</button>`;
 
     return `
