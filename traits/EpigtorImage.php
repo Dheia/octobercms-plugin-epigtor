@@ -5,7 +5,6 @@ use Input;
 use Lang;
 use Response;
 use System\Models\File;
-use Utopigs\Banners\Models\Image;
 
 trait EpigtorImage
 {
@@ -37,7 +36,7 @@ trait EpigtorImage
 
     private function getContentImage()
     {
-        $image = Image::where('code', $this->message)->first();
+        $image = \Utopigs\Banners\Models\Image::where('code', $this->message)->first();
         $content = $image->image ?? null;
 
         return $content;
@@ -103,7 +102,7 @@ trait EpigtorImage
         if ($modelClass) {
             $model = $modelClass::findOrFail($modelId);
         } else {
-            $model = Image::firstOrCreate(['code' => $attribute]);
+            $model = \Utopigs\Banners\Models\Image::firstOrCreate(['code' => $attribute]);
             $attribute = 'image';
         }
 
@@ -142,7 +141,7 @@ trait EpigtorImage
                 $model = $modelClass::findOrFail($modelId);
                 $fileRelation = $model->{$attribute}();
             } else {
-                $model = Image::firstOrCreate(['code' => $attribute]);
+                $model = \Utopigs\Banners\Models\Image::firstOrCreate(['code' => $attribute]);
                 $fileRelation = $model->image();
             }
             $fileRelation->add($file);
@@ -193,7 +192,7 @@ trait EpigtorImage
             $model = $modelClass::findOrFail($modelId);
             $file = $model->$attribute;
         } else {
-            $model = Image::firstOrCreate(['code' => $attribute]);
+            $model = \Utopigs\Banners\Models\Image::firstOrCreate(['code' => $attribute]);
             $file = $model->image;
         }
         
