@@ -4,6 +4,7 @@ use Backend\Models\EditorSetting;
 use BackendAuth;
 use Cms\Classes\ComponentBase;
 use Cms\Classes\PageManager;
+use Cms\Models\PageLookupItem;
 use Url;
 use Utopigs\Epigtor\Models\Settings;
 use Utopigs\Epigtor\Traits\EpigtorImage;
@@ -35,6 +36,8 @@ class Epigtor extends ComponentBase
     public $labelSave;
     public $labelCancel;
     public $cssClass;
+    public $isOldLink;
+    public $isOldImage;
 
     public function componentDetails()
     {
@@ -128,6 +131,16 @@ class Epigtor extends ComponentBase
         $this->content = null;
         $this->cssClass = $this->property('cssClass');
 
+        $this->isOldLink = false;
+        if ($this->type == 'link' && !$this->propertyModel) {
+            $this->isOldLink = true;
+        }
+
+        $this->isOldImage = false;
+        if ($this->type == 'image' && !$this->propertyModel) {
+            $this->isOldImage = true;
+        }
+
         // reset properties for next component
         // this is needed for multiple components on the same page,
         // otherwise if a component doesn't have a property set, it will use the last set property
@@ -151,10 +164,14 @@ class Epigtor extends ComponentBase
                 $link = $message;
                 $linkTitle = $message . '_title';
                 $linkIsNewTab = $message . '_is_new_tab';
+                $linkSchema = PageLookupItem::decodeSchema($model->$link);
                 $content = [
                     'url' => $this->parseOctoberLink($model->$link),
                     'text' => $model->$linkTitle,
                     'is_new_tab' => $model->$linkIsNewTab,
+                    'type' => $linkSchema['type'] ?? 'url',
+                    'external_url' => $linkSchema['url'] ?? '',
+                    'reference' => $linkSchema['reference'] ?? '',
                 ];
             }
             $this->model_class = get_class($model);
@@ -172,14 +189,20 @@ class Epigtor extends ComponentBase
         }
 
         if ($this->type == 'image') {
+            if (!class_exists('\Utopigs\Banners\Models\Image')) {
+                throw new \Exception('The plugin Utopigs.Banners is required to use the Epigtor image standalone feature. Please install and activate the plugin.');
+            }
             return $this->getContentImage($this->message);
         }
 
         if ($this->type == 'link') {
+            if (!class_exists('\Utopigs\Linkable\Models\Link')) {
+                throw new \Exception('The plugin Utopigs.Linkable is required to use the Epigtor link standalone feature. Please install and activate the plugin.');
+            }
             return $this->getContentLink($this->message);
         }
 
-        return null;
+        throw new \Exception('Invalid Epigtor type: '.$this->type);
     }
 
     private function renderContent($content)

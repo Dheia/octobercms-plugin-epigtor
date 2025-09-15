@@ -1,5 +1,9 @@
 <?php namespace Utopigs\Epigtor\Traits;
 
+use Cms\Classes\Page;
+use Cms\Classes\Theme;
+use Cms\Models\PageLookupItem;
+use Event;
 use Lang;
 
 trait EpigtorLink
@@ -54,34 +58,54 @@ trait EpigtorLink
         $modelId = post('model')['id'];
         $attribute = post('message');
         $cssClass = post('cssClass');
+        $isOldLink = post('isOldLink');
 
-        if ($linkId) {
-            $link = \Utopigs\Linkable\Models\Link::findOrFail($linkId);
-        } else {
-            $link = new \Utopigs\Linkable\Models\Link;
-            if ($modelClass) {
-                $model = $modelClass::findOrFail($modelId);
-                $link->field = $attribute;
+        if ($isOldLink) {
+            if ($linkId) {
+                $link = \Utopigs\Linkable\Models\Link::findOrFail($linkId);
             } else {
-                $link->code = $attribute;
+                $link = new \Utopigs\Linkable\Models\Link;
+                if ($modelClass) {
+                    $model = $modelClass::findOrFail($modelId);
+                    $link->field = $attribute;
+                } else {
+                    $link->code = $attribute;
+                }
             }
-        }
 
-        $link->text = $text;
-        $link->type = $type;
-        $link->external_url = $externalUrl;
-        $link->reference = $reference;
-        $link->is_new_tab = $isNewTab;
-        $link->save();
+            $link->text = $text;
+            $link->type = $type;
+            $link->external_url = $externalUrl;
+            $link->reference = $reference;
+            $link->is_new_tab = $isNewTab;
+            $link->save();
 
-        if (isset($model)) {
-            $model->linkables()->add($link);
-        }
+            if (isset($model)) {
+                $model->linkables()->add($link);
+            }
 
-        if ($modelClass) {
-            $widgetId = str_slug($modelClass).'-'.$modelId.'-'.$attribute;
+            if ($modelClass) {
+                $widgetId = str_slug($modelClass).'-'.$modelId.'-'.$attribute;
+            } else {
+                $widgetId = 'link-'.$attribute;
+            }
         } else {
-            $widgetId = 'link-'.$attribute;
+            $model = $modelClass::findOrFail($modelId);
+            $model->$attribute = PageLookupItem::encodeSchema($type, $reference ?? '', !empty($externalUrl) ? ['url' => $externalUrl] : []);
+            $model->{$attribute . '_title'} = $text;
+            $model->{$attribute . '_is_new_tab'} = $isNewTab;
+            $model->save();
+
+            $link = [
+                'url' => $this->parseOctoberLink($model->$attribute),
+                'text' => $text,
+                'is_new_tab' => $isNewTab,
+                'type' => $type,
+                'external_url' => $externalUrl,
+                'reference' => $reference,
+            ];
+
+            $widgetId = str_slug($modelClass).'-'.$modelId.'-'.$attribute;
         }
 
         return [
@@ -117,8 +141,7 @@ trait EpigtorLink
 
     public function onGetTypeOptions()
     {
-        $link = new \Utopigs\Linkable\Models\Link;
-        $options = $link->getTypeOptions();
+        $options = $this->getTypes();
         foreach ($options as $key => $value) {
             $options[$key] = Lang::get($value);
         }
@@ -130,13 +153,100 @@ trait EpigtorLink
 
     public function onGetReferenceOptions()
     {
-        $link = new Link;
-        $link->type = post('type');
-        $options = $link->getReferenceOptions();
+        $options = $this->getReferences(post('type'));
 
         return [
             'options' => $options
         ];
+    }
+
+    private function getTypes()
+    {
+        $result = [];
+        $apiResult = Event::fire('cms.pageLookup.listTypes');
+
+        $result['url'] = trans('utopigs.linkable::lang.fields.type_url');
+
+        if (is_array($apiResult)) {
+            foreach ($apiResult as $typeList) {
+                if (!is_array($typeList)) {
+                    continue;
+                }
+
+                foreach ($typeList as $typeCode => $typeName) {
+                    $apiResult2 = Event::fire('cms.pageLookup.getTypeInfo', [$typeCode]);
+                    if (is_array($apiResult2)) {
+                        foreach ($apiResult2 as $typeInfo) {
+                            if (isset($typeInfo['references'])) {
+                                $result[$typeCode] = $typeName;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    private function getReferences($type)
+    {
+        $items = [];
+        if (!$type) return $items;
+        if ($type == 'url') return $items;
+
+        if ($type == 'cms-page') {
+            $theme = Theme::getActiveTheme();
+            $pages = Page::listInTheme($theme, true);
+
+            foreach ($pages as $page) {
+                if (!isset($page->settings['is_linkable']) || $page->settings['is_linkable']==true) {
+                    $items[$page->getBaseFileName()] = $page->title . ' [' . $page->getBaseFileName() . ']';
+                }
+            }
+
+            return $items;
+        }
+
+        $apiResult = Event::fire('cms.pageLookup.getTypeInfo', [$type]);
+
+        $iterator = function($children) use (&$iterator) {
+            $child_items = [];
+
+            foreach ($children as $child_key => $child) {
+                if (is_array($child)) {
+                    $child_items[$child_key] = $child['title'];
+                    if (!empty($child['items'])) {
+                        $child_items = array_replace($child_items, $iterator($child['items']));
+                    }
+                } else {
+                    $child_items[$child_key] = $child;
+                }
+            }
+
+            return $child_items;
+        };
+
+        if (is_array($apiResult)) {
+            foreach ($apiResult as $typeInfo) {
+                if (isset($typeInfo['references'])) {
+                    foreach ($typeInfo['references'] as $key => $item) {
+                        if (is_array($item)) {
+                            $items[$key] = $item['title'];
+                            if (!empty($item['items'])) {
+                                $items = array_replace($items, $iterator($item['items']));
+                            }
+                        } else {
+                            $items[$key] = $item;
+                        }
+
+                    }
+                    return $items;
+                }
+            }
+        }
+
+        return $items;
     }
 
 }
