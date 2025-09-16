@@ -24,6 +24,7 @@ class Settings extends Model
     {
         $this->froala_custom_defaults = File::get(base_path().'/plugins/utopigs/epigtor/models/settings/froala-custom-defaults.js');
         $this->froala_custom_defaults_file = '';
+        $this->events_type_to_launch = 'pages.menuitem';
     }
 
     public function beforeSave()

@@ -9,3 +9,12 @@ fields:
         type: codeeditor
         size: giant
         language: javascript
+    events_type_to_launch:
+        label: utopigs.epigtor::lang.settings.events_type_to_launch
+        comment: utopigs.epigtor::lang.settings.events_type_to_launch_comment
+        commentHtml: true
+        type: dropdown
+        options:
+            pages.menuitem: utopigs.epigtor::lang.settings.events_type_to_launch_pages
+            cms.pageLookup: utopigs.epigtor::lang.settings.events_type_to_launch_cms
+        default: pages

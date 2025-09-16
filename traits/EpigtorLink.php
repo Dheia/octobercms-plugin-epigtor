@@ -5,6 +5,7 @@ use Cms\Classes\Theme;
 use Cms\Models\PageLookupItem;
 use Event;
 use Lang;
+use Utopigs\Epigtor\Models\Settings;
 
 trait EpigtorLink
 {
@@ -174,8 +175,10 @@ trait EpigtorLink
 
     private function getTypes()
     {
+        $eventType = Settings::get('events_type_to_launch', 'pages.menuitem');
+
         $result = [];
-        $apiResult = Event::fire('cms.pageLookup.listTypes');
+        $apiResult = Event::fire($eventType.'.listTypes');
 
         $result['url'] = trans('utopigs.linkable::lang.fields.type_url');
 
@@ -186,12 +189,17 @@ trait EpigtorLink
                 }
 
                 foreach ($typeList as $typeCode => $typeName) {
-                    $apiResult2 = Event::fire('cms.pageLookup.getTypeInfo', [$typeCode]);
-                    if (is_array($apiResult2)) {
-                        foreach ($apiResult2 as $typeInfo) {
-                            if (isset($typeInfo['references'])) {
-                                $result[$typeCode] = $typeName;
-                            }
+                    if (is_array($typeName) && isset($typeName[1]) && $typeName[1] === true) {
+                        continue;
+                    }
+                    $apiResult2 = Event::fire($eventType.'.getTypeInfo', [$typeCode]);
+                    if (!is_array($apiResult2)) {
+                        continue;
+                    }
+                    foreach ($apiResult2 as $typeInfo) {
+                        if (!empty($typeInfo['references'])) {
+                            $result[$typeCode] = $typeName;
+                            continue 2;
                         }
                     }
                 }
@@ -203,6 +211,8 @@ trait EpigtorLink
 
     private function getReferences($type)
     {
+        $eventType = Settings::get('events_type_to_launch', 'pages.menuitem');
+
         $items = [];
         if (!$type) return $items;
         if ($type == 'url') return $items;
@@ -220,7 +230,7 @@ trait EpigtorLink
             return $items;
         }
 
-        $apiResult = Event::fire('cms.pageLookup.getTypeInfo', [$type]);
+        $apiResult = Event::fire($eventType.'.getTypeInfo', [$type]);
 
         $iterator = function($children) use (&$iterator) {
             $child_items = [];
