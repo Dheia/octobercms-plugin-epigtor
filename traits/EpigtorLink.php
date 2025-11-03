@@ -180,7 +180,7 @@ trait EpigtorLink
         $result = [];
         $apiResult = Event::fire($eventType.'.listTypes');
 
-        $result['url'] = trans('utopigs.linkable::lang.fields.type_url');
+        $result['url'] = trans('utopigs.epigtor::lang.link.url');
 
         if (is_array($apiResult)) {
             foreach ($apiResult as $typeList) {
