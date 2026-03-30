@@ -109,6 +109,8 @@
             X_OCTOBER_MEDIA_MANAGER_QUICK_UPLOAD: 1
         };
         richEditorOpts.pastePlain = true;
+        richEditorOpts.pasteDeniedTags = ['div', 'section', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'img'];
+        richEditorOpts.htmlAllowedAttrs = ['href', 'src', 'alt', 'title'];
 
         this.$el.find('>.rendered').hide();
 

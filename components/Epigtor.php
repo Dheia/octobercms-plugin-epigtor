@@ -96,12 +96,12 @@ class Epigtor extends ComponentBase
             }
             $this->globalToolbarButtons = $globalToolbarButtons;
 
-            $this->addCss('assets/css/epigtor.css?v=3.0.2');
-            $this->addJs('assets/js/epigtor-panel.js?v=3.0.2');
-            $this->addJs('assets/js/epigtor-plain.js?v=3.0.2');
-            $this->addJs('assets/js/epigtor-richeditor.js?v=3.0.2');
-            $this->addJs('assets/js/epigtor-image.js?v=3.0.2');
-            $this->addJs('assets/js/epigtor-link.js?v=3.1.2');
+            $this->addCss('assets/css/epigtor.css?v=3.1.5');
+            $this->addJs('assets/js/epigtor-panel.js?v=3.1.5');
+            $this->addJs('assets/js/epigtor-plain.js?v=3.1.5');
+            $this->addJs('assets/js/epigtor-richeditor.js?v=3.1.5');
+            $this->addJs('assets/js/epigtor-image.js?v=3.1.5');
+            $this->addJs('assets/js/epigtor-link.js?v=3.1.5');
 
             $this->ace_vendor_path = Url::asset('/modules/backend/formwidgets/codeeditor/assets/vendor/ace');
 
